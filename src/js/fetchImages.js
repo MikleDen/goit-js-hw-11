@@ -1,14 +1,14 @@
-// const BASE_URL = 'https://restcountries.com/v3.1/name';
+import axios from 'axios';
 
-// const fetchImages = name => {
-//   return fetch(
-//     `${BASE_URL}/${name}?fields=name,capital,population,flags,languages`
-//   ).then(response => {
-//     if (response.status === 404) {
-//       return Promise.reject(new Error());
-//     }
-//     return response.json();
-//   });
-// };
+axios.defaults.baseURL = 'https://pixabay.com/api/';
+const KEY = '25766392-01b12b6ed5ab34bc2910d9c3e';
 
-// export { fetchCountries };
+async function fetchImages(query, page, perPage) {
+  const response = await axios.get(
+    `?key=${KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=${perPage}`,
+  );
+  return response;
+}
+
+
+export { fetchImages};

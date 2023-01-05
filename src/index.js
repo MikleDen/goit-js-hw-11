@@ -1,73 +1,87 @@
-// import './css/styles.css';
+import Notiflix from 'notiflix';
+import { fetchImages } from './js/fetchImages';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+import {renderGallery} from './js/galleryRender'
 
-// import { Notify } from 'notiflix/build/notiflix-notify-aio';
-// import { fetchImages } from './js/fetchImages';
-// const DEBOUNCE_DELAY = 300;
+const searchFormEl = document.querySelector('.search-form');
+const loadMoreBtn = document.querySelector('.btn-load-more');
+const gallery = document.querySelector('.gallery');
 
-// const inputEl = document.getElementById('search-box');
-// const listEl = document.querySelector('.country-list');
-// const infoEl = document.querySelector('.country-info');
 
-// const cleanMarkup = ref => (ref.innerHTML = '');
+searchFormEl.addEventListener('submit',onSubmit);
+loadMoreBtn.addEventListener('click', onLoadMoreBtn);
 
-// const inputHandler = e => {
-//   const textInput = e.target.value.trim();
+let query = '';
+let page = 1;
+const perPage = 40;
 
-//   if (!textInput) {
-//     cleanMarkup(listEl);
-//     cleanMarkup(infoEl);
-//     // return;
-//   }
+function alertImagesFound(data) {
+  Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+}
 
-//   fetchШьфпуі(textInput)
-//     .then(data => {
-//       console.log(data);
-//       if (data.length > 10) {
-//         Notify.info(
-//           'Too many matches found. Please enter a more specific name'
-//         );
-//         return;
-//       }
-//       renderMarkup(data);
-//     })
-//     .catch(err => {
-//       cleanMarkup(listEl);
-//       cleanMarkup(infoEl);
-//       Notify.failure('Oops, there is no country with that name');
-//     });
-// };
+function alertNoEmptySearch() {
+  Notiflix.Notify.failure('The search string cannot be empty. Please specify your search query.');
+}
 
-// const renderMarkup = data => {
-//   if (data.length === 1) {
-//     cleanMarkup(listEl);
-//     const markupInfo = createInfoMarkup(data);
-//     infoEl.innerHTML = markupInfo;
-//   } else {
-//     cleanMarkup(infoEl);
-//     const markupList = createListMarkup(data);
-//     listEl.innerHTML = markupList;
-//   }
-// };
+function alertNoImagesFound() {
+  Notiflix.Notify.failure(
+    'Sorry, there are no images matching your search query. Please try again.',
+  );
+}
 
-// const createListMarkup = data => {
-//   return data
-//     .map(
-//       ({ name, flags }) =>
-//         `<li><img src="${flags.png}" alt="${name.official}" width="60" height="40">${name.official}</li>`
-//     )
-//     .join('');
-// };
+function alertEndOfSearch() {
+  Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+}
 
-// const createInfoMarkup = data => {
-//   return data.map(
-//     ({ name, capital, population, flags, languages }) =>
-//       `<h1><img src="${flags.png}" alt="${
-//         name.official
-//       }" width="40" height="40">${name.official}</h1>
-//       <p>Capital: ${capital}</p>
-//       <p>Population: ${population}</p>
-//       <p>Languages: ${Object.values(languages)}</p>`
-//   );
-// };
+function onSubmit(e){
+  e.preventDeault();
+  page=1;
+  query =e.currentTarget.searchQuery.value.trim();
+  gallery.innerHTML = '';
+  loadMoreBtn.classList.add('is-hidden');
 
-// inputEl.addEventListener('input', debounce(inputHandler, DEBOUNCE_DELAY));
+  if (query === '') {
+    alertNoEmptySearch();
+    return;
+  }
+}
+
+fetchImages(query, page, perPage)
+    .then(({ data }) => {
+      if (data.totalHits === 0) {
+        alertNoImagesFound();
+      } else {
+        renderGallery(data.hits);
+        simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+        alertImagesFound(data);
+
+        if (data.totalHits > perPage) {
+          loadMoreBtn.classList.remove('is-hidden');
+        }
+      }
+    })
+    .catch(error => console.log(error))
+    .finally(() => {
+      searchFormEl.reset();
+    });
+
+
+function onLoadMoreBtn() {
+  page += 1;
+  simpleLightBox.destroy();
+
+  fetchImages(query, page, perPage)
+    .then(({ data }) => {
+      renderGallery(data.hits);
+      simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+
+      const totalPages = Math.ceil(data.totalHits / perPage);
+
+      if (page > totalPages) {
+        loadMoreBtn.classList.add('is-hidden');
+        alertEndOfSearch();
+      }
+    })
+    .catch(error => console.log(error));
+}
