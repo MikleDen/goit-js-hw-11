@@ -1,73 +1,73 @@
-import './css/styles.css';
-import debounce from 'lodash.debounce';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { fetchCountries } from './js/fetchCountries';
-const DEBOUNCE_DELAY = 300;
+// import './css/styles.css';
 
-const inputEl = document.getElementById('search-box');
-const listEl = document.querySelector('.country-list');
-const infoEl = document.querySelector('.country-info');
+// import { Notify } from 'notiflix/build/notiflix-notify-aio';
+// import { fetchImages } from './js/fetchImages';
+// const DEBOUNCE_DELAY = 300;
 
-const cleanMarkup = ref => (ref.innerHTML = '');
+// const inputEl = document.getElementById('search-box');
+// const listEl = document.querySelector('.country-list');
+// const infoEl = document.querySelector('.country-info');
 
-const inputHandler = e => {
-  const textInput = e.target.value.trim();
+// const cleanMarkup = ref => (ref.innerHTML = '');
 
-  if (!textInput) {
-    cleanMarkup(listEl);
-    cleanMarkup(infoEl);
-    return;
-  }
+// const inputHandler = e => {
+//   const textInput = e.target.value.trim();
 
-  fetchCountries(textInput)
-    .then(data => {
-      console.log(data);
-      if (data.length > 10) {
-        Notify.info(
-          'Too many matches found. Please enter a more specific name'
-        );
-        return;
-      }
-      renderMarkup(data);
-    })
-    .catch(err => {
-      cleanMarkup(listEl);
-      cleanMarkup(infoEl);
-      Notify.failure('Oops, there is no country with that name');
-    });
-};
+//   if (!textInput) {
+//     cleanMarkup(listEl);
+//     cleanMarkup(infoEl);
+//     // return;
+//   }
 
-const renderMarkup = data => {
-  if (data.length === 1) {
-    cleanMarkup(listEl);
-    const markupInfo = createInfoMarkup(data);
-    infoEl.innerHTML = markupInfo;
-  } else {
-    cleanMarkup(infoEl);
-    const markupList = createListMarkup(data);
-    listEl.innerHTML = markupList;
-  }
-};
+//   fetchШьфпуі(textInput)
+//     .then(data => {
+//       console.log(data);
+//       if (data.length > 10) {
+//         Notify.info(
+//           'Too many matches found. Please enter a more specific name'
+//         );
+//         return;
+//       }
+//       renderMarkup(data);
+//     })
+//     .catch(err => {
+//       cleanMarkup(listEl);
+//       cleanMarkup(infoEl);
+//       Notify.failure('Oops, there is no country with that name');
+//     });
+// };
 
-const createListMarkup = data => {
-  return data
-    .map(
-      ({ name, flags }) =>
-        `<li><img src="${flags.png}" alt="${name.official}" width="60" height="40">${name.official}</li>`
-    )
-    .join('');
-};
+// const renderMarkup = data => {
+//   if (data.length === 1) {
+//     cleanMarkup(listEl);
+//     const markupInfo = createInfoMarkup(data);
+//     infoEl.innerHTML = markupInfo;
+//   } else {
+//     cleanMarkup(infoEl);
+//     const markupList = createListMarkup(data);
+//     listEl.innerHTML = markupList;
+//   }
+// };
 
-const createInfoMarkup = data => {
-  return data.map(
-    ({ name, capital, population, flags, languages }) =>
-      `<h1><img src="${flags.png}" alt="${
-        name.official
-      }" width="40" height="40">${name.official}</h1>
-      <p>Capital: ${capital}</p>
-      <p>Population: ${population}</p>
-      <p>Languages: ${Object.values(languages)}</p>`
-  );
-};
+// const createListMarkup = data => {
+//   return data
+//     .map(
+//       ({ name, flags }) =>
+//         `<li><img src="${flags.png}" alt="${name.official}" width="60" height="40">${name.official}</li>`
+//     )
+//     .join('');
+// };
 
-inputEl.addEventListener('input', debounce(inputHandler, DEBOUNCE_DELAY));
+// const createInfoMarkup = data => {
+//   return data.map(
+//     ({ name, capital, population, flags, languages }) =>
+//       `<h1><img src="${flags.png}" alt="${
+//         name.official
+//       }" width="40" height="40">${name.official}</h1>
+//       <p>Capital: ${capital}</p>
+//       <p>Population: ${population}</p>
+//       <p>Languages: ${Object.values(languages)}</p>`
+//   );
+// };
+
+// inputEl.addEventListener('input', debounce(inputHandler, DEBOUNCE_DELAY));
