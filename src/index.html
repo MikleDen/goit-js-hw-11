@@ -5,37 +5,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/styles.css">
     <title>Homework 11</title>
   </head>
   <body>
-    
-      
-      <div class="form-container">
-        <form class="search-form" id="search-form">
-          <input
-            type="text"
-            name="searchQuery"
-            autocomplete="off"
-            placeholder="Search images..."
-          />
-          <button type="submit">&#128269;</button>
-        </form>
-      </div>
-  
-      <div class="gallery-container">
-        <div class="gallery"></div>
-        <button type="button" class="btn-load-more is-hidden">Load more</button>
-        <a class="btn-to-top" title="Return to top">
-          <span class="material-icons">arrow_upward</span></a>
-      </div>
-      
 
-    
-    
-    
-   
-  
-    <script src="index.js" type="module"></script>
+    <div class="form-container">
+      <form class="search-form" id="search-form">
+        <input
+          type="text"
+          class="input-search"
+          name="searchQuery"
+          autocomplete="off"
+          placeholder="Search images..."
+        />
+        <button type="submit">&#128269;</button>
+      </form>
+    </div>
+
+    <div class="gallery">
+      <!-- Карточки изображений -->
+    </div>
+
+    <button type="button" class="load-more">
+      <span class="label">Load more</span>
+    </button>
+
+    <script src="index.js"  type="module" ></script>
   </body>
 </html>
